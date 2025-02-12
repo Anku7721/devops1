@@ -1,5 +1,8 @@
 
 # Configure the Terraform backend with an S3 bucket
+resource "random_id" "suffix" {
+  byte_length = 4
+}
 
 terraform {
   backend "s3" {
