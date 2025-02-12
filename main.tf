@@ -4,34 +4,16 @@
 terraform {
   backend "s3" {
     bucket = "467.devops.candidate.exam"
-    key    = "Ankita.Ghogare"  # Replace with your full name
+    key    = "Ankita.Ghadage1"  # Replace with your full name
     region = "ap-south-1"
   }
-}
-
-# -----------------------------
-# Data Sources
-# -----------------------------
-# NAT Gateway
-data "aws_nat_gateway" "nat" {
-  id = "nat-0a34a8efd5e420945"
-}
-
-# VPC
-data "aws_vpc" "vpc" {
-  id = "vpc-06b326e20d7db55f9"
-}
-
-# Lambda IAM Role
-data "aws_iam_role" "lambda" {
-  name = "DevOps-Candidate-Lambda-Role"
 }
 
 # -----------------------------
 # Network Resources
 # -----------------------------
 # Private Subnet
-resource "aws_subnet" "private_subnet" {
+resource "aws_subnet" "pvt_subnet" {
   vpc_id            = data.aws_vpc.vpc.id
   cidr_block        = "10.0.2.0/24"
   availability_zone = "us-east-1a"
@@ -43,7 +25,7 @@ resource "aws_subnet" "private_subnet" {
 }
 
 # Route Table for Private Subnet
-resource "aws_route_table" "private_rt" {
+resource "aws_route_table" "pvt_rt" {
   vpc_id = data.aws_vpc.vpc.id
 
   route {
@@ -58,15 +40,15 @@ resource "aws_route_table" "private_rt" {
 
 # Route Table Association
 resource "aws_route_table_association" "private_rt_assoc" {
-  subnet_id      = aws_subnet.private_subnet.id
-  route_table_id = aws_route_table.private_rt.id
+  subnet_id      = aws_subnet.pvt_subnet.id
+  route_table_id = aws_route_table.pvt_rt.id
 }
 
 # -----------------------------
 # Security Group
 # -----------------------------
 # Security Group for Lambda
-resource "aws_security_group" "lambda_sg" {
+resource "aws_security_group" "lambda_sg1" {
   vpc_id      = data.aws_vpc.vpc.id
   name        = "lambda-sg"
   description = "Allow Lambda to access NAT Gateway"
@@ -94,9 +76,9 @@ data "archive_file" "create_lambda_pkg" {
 # Lambda Function
 # -----------------------------
 
-resource "aws_lambda_function" "example_lambda" {
+resource "aws_lambda_function" "example_lambda1" {
   filename      = data.archive_file.create_lambda_pkg.output_path
-  function_name =  "ankita-Ghogare-test" 
+  function_name =  "ankita-ghadage-test1" 
   runtime       = "python3.12"
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
@@ -111,8 +93,8 @@ resource "aws_lambda_function" "example_lambda" {
   }
 
   vpc_config {
-    subnet_ids         = [aws_subnet.private_subnet.id]
-    security_group_ids = [aws_security_group.lambda_sg.id]
+    subnet_ids         = [aws_subnet.pvt_subnet.id]
+    security_group_ids = [aws_security_group.lambda_sg1.id]
   }
 
   tags = {
@@ -124,11 +106,11 @@ resource "aws_lambda_function" "example_lambda" {
 # Outputs
 # -----------------------------
 output "subnet_id" {
-  value = aws_subnet.private_subnet.id
+  value = aws_subnet.pvt_subnet.id
 }
 
 output "lambda_arn" {
-  value = aws_lambda_function.example_lambda.arn
+  value = aws_lambda_function.example_lambda1.arn
 }
 
 output "security_group_id" {
