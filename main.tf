@@ -73,7 +73,7 @@ data "archive_file" "create_lambda_pkg" {
 
 resource "aws_lambda_function" "example_lambda1" {
   filename      = data.archive_file.create_lambda_pkg.output_path
-  function_name =  "ankita-ghogare-test1" 
+  function_name =  "ankita-ghogare-test2" 
   runtime       = "python3.12"
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
