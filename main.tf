@@ -21,9 +21,6 @@ resource "aws_subnet" "pvt_subnet" {
   cidr_block        = "10.0.20.0/24"
   map_public_ip_on_launch = false
   
-  tags = {
-    Name = "Private Subnet for Lambda"
-  }
 }
 
 # Route Table for Private Subnet
@@ -35,9 +32,7 @@ resource "aws_route_table" "pvt_rt" {
     gateway_id = data.aws_nat_gateway.nat.id
   }
   
-  tags = {
-    Name = "Private Route Table"
-  }
+
 }
 
 # Route Table Association
@@ -62,9 +57,7 @@ resource "aws_security_group" "lambda_sg1" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "Lambda Security Group"
-  }
+
 }
 
 # Archive Lambda function code into a zip
@@ -99,9 +92,7 @@ resource "aws_lambda_function" "example_lambda1" {
     security_group_ids = [aws_security_group.lambda_sg1.id]
   }
 
-  tags = {
-    Name = "Lambda in Private Subnet"
-  }
+
 }
 
 # -----------------------------
